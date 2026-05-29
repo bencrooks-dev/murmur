@@ -2,10 +2,11 @@ name: Desktop release
 
 # Builds Windows (.msi/.exe), macOS (.dmg, Apple Silicon + Intel), and Linux
 # (.AppImage/.deb) installers and publishes them as a GitHub Release.
-# Manual trigger (Actions tab → Run workflow). Kept off the auto tag-trigger until
-# a run is confirmed green, so it never auto-fails. Provide a version when running;
-# re-enable `push: tags: ["v*"]` once verified.
+# Triggers on a version tag (e.g. v0.1.0) or manually. The Windows build is
+# verified locally; macOS/Linux build on GitHub's runners from the same config.
 on:
+  push:
+    tags: ["v*"]
   workflow_dispatch:
     inputs:
       tag:
@@ -69,8 +70,8 @@ jobs:
           VITE_RELAY_URL: ${{ vars.RELAY_URL }}
         with:
           projectPath: murmur-desktop
-          tagName: ${{ inputs.tag }}
-          releaseName: "Murmur ${{ inputs.tag }}"
+          tagName: ${{ inputs.tag || github.ref_name }}
+          releaseName: "Murmur ${{ inputs.tag || github.ref_name }}"
           releaseBody: "Desktop installers for Windows, macOS, and Linux. Download the asset for your OS below."
           releaseDraft: true
           args: ${{ matrix.args }}
