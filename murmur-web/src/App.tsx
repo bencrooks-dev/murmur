@@ -112,9 +112,7 @@ export default function App() {
     return (
       <div className="setup">
         <div className="setup__card">
-          <div className="setup__brand">
-            <span className="rail__dot" /> Murmur
-          </div>
+          <img className="setup__logo" src="/murmur-logo.png" alt="Murmur" />
           <h1>Connect</h1>
           <p>
             Choose a handle. Your device generates an MLS identity and publishes a
@@ -145,7 +143,7 @@ export default function App() {
   return (
     <div className="shell">
       <aside className="rail">
-        <div className="rail__brand"><span className="rail__dot" /> Murmur</div>
+        <div className="rail__brand"><img className="rail__mark" src="/murmur-mark.png" alt="" /> Murmur</div>
 
         <div className="rail__section">New conversation</div>
         <div className="newchat">

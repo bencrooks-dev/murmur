@@ -1,5 +1,7 @@
 <div align="center">
 
+<img src="docs/assets/murmur-logo.png" width="200" alt="Murmur" />
+
 # Murmur
 
 **Self-hostable, end-to-end-encrypted messaging — engineered to beat Hush on every axis.**

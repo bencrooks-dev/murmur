@@ -1,0 +1,36 @@
+name: CI
+
+# Runs the verified test + build suite on every push/PR to main.
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  rust:
+    name: Rust tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+      - name: crypto core
+        run: cargo test --manifest-path murmur-crypto/Cargo.toml
+      - name: post-quantum KEM
+        run: cargo test --manifest-path murmur-pq/Cargo.toml
+      - name: relay
+        run: cargo test --manifest-path murmur-server/Cargo.toml
+
+  web:
+    name: Web build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm ci
+        working-directory: murmur-web
+      - run: npm run build
+        working-directory: murmur-web

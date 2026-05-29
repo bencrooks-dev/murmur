@@ -1,8 +1,9 @@
 name: Deploy web PWA to GitHub Pages
 
+# Manual only: run from the Actions tab AFTER enabling Pages
+# (Settings → Pages → Source: GitHub Actions) and setting the RELAY_URL variable.
+# Kept manual so it never auto-fails before Pages is configured.
 on:
-  push:
-    branches: [main]
   workflow_dispatch:
 
 permissions:
