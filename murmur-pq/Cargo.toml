@@ -10,3 +10,7 @@ ml-kem = "0.2"
 x25519-dalek = { version = "2", features = ["static_secrets"] }
 sha3 = "0.10"
 rand_core = { version = "0.6", features = ["getrandom"] }
+# PQ-HPKE layer: HKDF key schedule + AES-256-GCM AEAD over the hybrid KEM secret.
+hkdf = "0.12"
+sha2 = "0.10"
+aes-gcm = "0.10"

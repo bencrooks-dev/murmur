@@ -14,6 +14,8 @@
 //! this module (see `docs/PQ-INTEGRATION.md`). Do not ship for real secrets
 //! until that integration lands and an independent audit passes.
 
+pub mod hpke;
+
 use ml_kem::kem::{Decapsulate, Encapsulate};
 use ml_kem::{EncodedSizeUser, KemCore, MlKem768};
 use rand_core::OsRng;
