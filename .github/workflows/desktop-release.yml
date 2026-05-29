@@ -1,0 +1,71 @@
+name: Desktop release
+
+# Builds Windows (.msi/.exe), macOS (.dmg, Apple Silicon + Intel), and Linux
+# (.AppImage/.deb) installers and publishes them as a GitHub Release.
+# Trigger by pushing a version tag, e.g.  git tag v0.1.0 && git push origin v0.1.0
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - platform: macos-latest
+            args: "--target aarch64-apple-darwin"
+          - platform: macos-latest
+            args: "--target x86_64-apple-darwin"
+          - platform: ubuntu-22.04
+            args: ""
+          - platform: windows-latest
+            args: ""
+    runs-on: ${{ matrix.platform }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ contains(matrix.platform, 'macos') && 'aarch64-apple-darwin,x86_64-apple-darwin' || '' }}
+
+      - name: Install Linux build deps
+        if: matrix.platform == 'ubuntu-22.04'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libwebkit2gtk-4.1-dev librsvg2-dev patchelf libappindicator3-dev
+
+      - name: Install web client deps
+        run: npm ci
+        working-directory: murmur-web
+
+      - name: Install desktop deps
+        run: npm install
+        working-directory: murmur-desktop
+
+      - name: Generate app icons (from the shared 512px source)
+        run: npx @tauri-apps/cli icon ../murmur-web/public/icon-512.png
+        working-directory: murmur-desktop
+
+      - name: Build + publish installers
+        uses: tauri-apps/tauri-action@v0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # Bake the public relay into desktop builds (Settings → Variables → RELAY_URL).
+          VITE_RELAY_URL: ${{ vars.RELAY_URL }}
+        with:
+          projectPath: murmur-desktop
+          tagName: ${{ github.ref_name }}
+          releaseName: "Murmur ${{ github.ref_name }}"
+          releaseBody: "Desktop installers for Windows, macOS, and Linux. Download the asset for your OS below."
+          releaseDraft: true
+          args: ${{ matrix.args }}

@@ -33,6 +33,20 @@ differentiated on the four axes Hush is weak on.
 
 See [`docs/ROADMAP.md`](./docs/ROADMAP.md) for exactly what is built vs. planned.
 
+## Download & install
+
+- **Phone (iOS / Android):** open the hosted web app and **Add to Home Screen** —
+  it installs as a PWA. See [`docs/DEPLOY.md`](./docs/DEPLOY.md) to host it.
+- **Desktop (Windows / macOS / Linux):** native installers are produced by the
+  [Desktop release workflow](./.github/workflows/desktop-release.yml) and published
+  under [**Releases**](../../releases). Maintainers cut a build with
+  `git tag v0.1.0 && git push origin v0.1.0` (Windows `.msi`/`.exe`, macOS `.dmg`
+  for Apple Silicon + Intel, Linux `.AppImage`/`.deb`).
+
+> Desktop and phone builds need a reachable relay; set `RELAY_URL` per
+> [`docs/DEPLOY.md`](./docs/DEPLOY.md). Until the first release is cut, build
+> locally (see Quick start).
+
 ## What works today (verified)
 
 | Component | What it owns | Verification |

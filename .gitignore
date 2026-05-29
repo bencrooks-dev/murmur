@@ -15,6 +15,10 @@ node_modules/
 **/dist/
 *.tsbuildinfo
 
+# tauri generated (icons + bindings are produced at build time)
+murmur-desktop/src-tauri/gen/
+murmur-desktop/src-tauri/icons/
+
 # OS / editor
 .DS_Store
 Thumbs.db
