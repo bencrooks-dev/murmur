@@ -18,7 +18,12 @@ function hex(bytes: Uint8Array): string {
     .join("");
 }
 
-export const RELAY_URL = `ws://${location.hostname}:8787/ws`;
+// Relay endpoint. Override with VITE_RELAY_URL at build time for public hosting
+// (e.g. wss://relay.example.com/ws). Otherwise derive from the page origin:
+// wss:// when served over https, ws:// for local/LAN dev on port 8787.
+export const RELAY_URL: string =
+  (import.meta.env.VITE_RELAY_URL as string | undefined) ||
+  `${location.protocol === "https:" ? "wss" : "ws"}://${location.hostname}:8787/ws`;
 
 export class MurmurClient {
   readonly user: string;

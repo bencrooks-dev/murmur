@@ -68,8 +68,10 @@ PQ ciphersuite); P1 builds the real API against upstream OpenMLS.
       proves opaque payload routing between two WS clients, no sender echo. (`cargo run`
       → ws://0.0.0.0:8787/ws.) Docker/Postgres/Redis deferred.
 - [x] **Sealed sender** (basic) — relay routes on group id only, never inspects body.
-- [ ] Key-package **directory** + per-user **Welcome inbox** (needed for real 2-client
-      handshake over the wire — the next increment that connects murmur-web to the relay).
+- [x] Key-package **directory** + per-user **Welcome inbox** (2 server tests). Web
+      `RelayClient` + `MurmurClient` orchestrate the full handshake; **Node e2e against
+      the live relay proves two clients exchange key packages + Welcome + encrypted
+      messages both ways** (`murmur-wasm/test_e2e_relay.js`). Real multi-user E2EE works.
 - [ ] Auth, registration, device-key registration.
 - [ ] Length padding to power-of-two buckets.
 - [ ] Redis fanout; Postgres for accounts/groups/membership/refs (durable history).
