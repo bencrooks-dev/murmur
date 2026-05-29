@@ -56,12 +56,16 @@ PQ ciphersuite); P1 builds the real API against upstream OpenMLS.
 - **Exit:** the same core drives a browser tab AND a RN dev build exchanging
   classical E2EE messages. Mobile parity proven before PQ.
 
-## Phase 2 — PQ ciphersuite (differentiator #1)
-- [ ] X-Wing HPKE provider (`X25519 + ML-KEM-768`), AES-256-GCM AEAD.
-- [ ] Register as private-use MLS ciphersuite; negotiate at group creation.
-- [ ] Full PQ cycle: create → add → message → remove.
-- [ ] Benchmark on **mobile** too (PQ keys are big; phones are the constraint).
-- **Exit:** PQ-protected group works end-to-end on web AND phone; perf documented.
+## Phase 2 — PQ ciphersuite (differentiator #1) ← IN PROGRESS
+- [x] **Hybrid X25519 + ML-KEM-768 KEM** built + tested (`murmur-pq`, 4 tests):
+      generate/encapsulate/decapsulate, SHA3-256 combiner, wrong-recipient fails.
+      The cryptographic core of the differentiator. ✅
+- [ ] Fork OpenMLS; register private-use PQ ciphersuite; custom HPKE provider that
+      calls `murmur-pq` for the KEM (AES-256-GCM AEAD). See `docs/PQ-INTEGRATION.md`.
+- [ ] Select PQ ciphersuite in `murmur-crypto`; re-run full stack on it.
+- [ ] Benchmark on **mobile** (PQ keys are big; phones are the constraint).
+- [ ] **Third-party crypto audit** (hard gate).
+- **Exit:** PQ-protected group works end-to-end on web AND phone; perf documented; audited.
 
 ## Phase 3 — Server MVP (`murmur-server`) + metadata resistance (differentiator #2) ← STARTED
 - [x] axum **WebSocket relay**, in-memory group→subscriber fanout. Integration test

@@ -1,0 +1,12 @@
+[package]
+name = "murmur-pq"
+version = "0.0.0"
+edition = "2021"
+description = "Hybrid post-quantum KEM (X25519 + ML-KEM-768) for Murmur's PQ MLS ciphersuite"
+license = "AGPL-3.0"
+
+[dependencies]
+ml-kem = "0.2"
+x25519-dalek = { version = "2", features = ["static_secrets"] }
+sha3 = "0.10"
+rand_core = { version = "0.6", features = ["getrandom"] }
