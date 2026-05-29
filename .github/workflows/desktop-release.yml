@@ -73,5 +73,5 @@ jobs:
           tagName: ${{ inputs.tag || github.ref_name }}
           releaseName: "Murmur ${{ inputs.tag || github.ref_name }}"
           releaseBody: "Desktop installers for Windows, macOS, and Linux. Download the asset for your OS below."
-          releaseDraft: true
+          releaseDraft: false
           args: ${{ matrix.args }}
