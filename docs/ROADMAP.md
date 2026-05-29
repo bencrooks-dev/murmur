@@ -58,8 +58,9 @@ PQ ciphersuite); P1 builds the real API against upstream OpenMLS.
 
 ## Phase 2 — PQ ciphersuite (differentiator #1) ← IN PROGRESS
 - [x] **Hybrid X25519 + ML-KEM-768 KEM** built + tested (`murmur-pq`, 4 tests):
-      generate/encapsulate/decapsulate, SHA3-256 combiner, wrong-recipient fails.
-      The cryptographic core of the differentiator. ✅
+      generate/encapsulate/decapsulate, SHA3-256 combiner, wrong-recipient fails. ✅
+- [x] **PQ-HPKE** built + tested (`murmur-pq::hpke`, 5 tests): KEM → HKDF-SHA256 →
+      AES-256-GCM seal/open. Both primitives an MLS ciphersuite needs are done. ✅
 - [ ] Fork OpenMLS; register private-use PQ ciphersuite; custom HPKE provider that
       calls `murmur-pq` for the KEM (AES-256-GCM AEAD). See `docs/PQ-INTEGRATION.md`.
 - [ ] Select PQ ciphersuite in `murmur-crypto`; re-run full stack on it.

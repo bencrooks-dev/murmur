@@ -6,8 +6,8 @@
   "build": {
     "frontendDist": "../../murmur-web/dist",
     "devUrl": "http://localhost:5173",
-    "beforeDevCommand": "npm --prefix ../../murmur-web run dev",
-    "beforeBuildCommand": "npm --prefix ../../murmur-web install && npm --prefix ../../murmur-web run build"
+    "beforeDevCommand": "npm --prefix ../murmur-web run dev",
+    "beforeBuildCommand": "npm --prefix ../murmur-web install && npm --prefix ../murmur-web run build"
   },
   "app": {
     "windows": [
