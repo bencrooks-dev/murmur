@@ -259,6 +259,37 @@ body {
 
 :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 3px; }
 
+/* ---------- Connect / identity screen ---------- */
+.setup { height: 100%; display: grid; place-items: center; }
+.setup__card {
+  width: 348px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--r-card);
+  padding: var(--s-6);
+}
+.setup__brand { display: flex; align-items: center; gap: var(--s-2); font-weight: 600; margin-bottom: var(--s-6); }
+.setup h1 { font-size: 18px; letter-spacing: -0.01em; margin: 0 0 6px; }
+.setup p { margin: 0 0 var(--s-4); color: var(--text-secondary); font-size: 13px; line-height: 1.6; }
+.field { display: block; margin-bottom: var(--s-3); }
+.field input {
+  width: 100%; height: 38px; padding: 0 var(--s-3);
+  background: var(--bg-base); border: 1px solid var(--border-subtle);
+  border-radius: var(--r-control); color: var(--text-primary); font: inherit;
+}
+.field input:focus { outline: 0; border-color: var(--accent); }
+.btn--block { width: 100%; height: 40px; }
+.err { color: var(--danger); font-size: 12px; margin-top: var(--s-2); }
+
+.newchat { display: flex; gap: 6px; padding: 0 var(--s-2) var(--s-2); }
+.newchat input {
+  flex: 1; height: 30px; padding: 0 8px; min-width: 0;
+  background: var(--bg-base); border: 1px solid var(--border-subtle);
+  border-radius: var(--r-control); color: var(--text-primary); font: inherit; font-size: 13px;
+}
+.newchat input:focus { outline: 0; border-color: var(--accent); }
+.btn--sm { height: 30px; padding: 0 10px; }
+
 @media (prefers-reduced-motion: reduce) {
   * { transition: none !important; }
 }

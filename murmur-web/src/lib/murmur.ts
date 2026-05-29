@@ -1,71 +1,89 @@
-// Thin TypeScript surface over the Murmur WASM crypto core. The web client never
-// touches MLS directly — it drives `WasmAccount`, so web and mobile share one
-// implementation. All ciphertext crosses as `Uint8Array`.
+// Single-account Murmur client: owns one MLS account (WASM) plus a relay
+// connection, and orchestrates the real handshake — publish key package, fetch a
+// peer's, create the group, deliver the Welcome, then exchange ciphertext. All
+// protocol logic stays in the Rust core; this just wires it to the network.
 import init, { WasmAccount } from "../crypto/murmur_wasm.js";
 import wasmUrl from "../crypto/murmur_wasm_bg.wasm?url";
+import { RelayClient } from "./relay";
 
 let readyPromise: Promise<unknown> | null = null;
-
-/** Initialize the WASM module exactly once. Must resolve before constructing a channel. */
 export function ensureCryptoReady(): Promise<unknown> {
   if (!readyPromise) readyPromise = init(wasmUrl);
   return readyPromise;
 }
 
-export interface DeliveryReceipt {
-  /** The opaque MLS ciphertext that left this client. */
-  ciphertext: Uint8Array;
-  /** True if the peer successfully decrypted — proof of a real E2EE round-trip. */
-  delivered: boolean;
-}
-
-/**
- * A demo of a real end-to-end-encrypted MLS channel between two local accounts.
- * Sending encrypts under the sender's group; the peer decrypts to confirm a true
- * round-trip. Both halves run the same audited core — nothing here is faked.
- */
-export class SecureChannel {
-  private readonly me: WasmAccount;
-  private readonly peer: WasmAccount;
-  private readonly gid: Uint8Array;
-  private readonly peerGid: Uint8Array;
-
-  constructor(myName: string, peerName: string) {
-    this.me = new WasmAccount(myName);
-    this.peer = new WasmAccount(peerName);
-    const peerKeyPackage = this.peer.keyPackage();
-    this.gid = this.me.createGroup();
-    const welcome = this.me.addMember(this.gid, peerKeyPackage);
-    this.peerGid = this.peer.joinGroup(welcome);
-  }
-
-  send(text: string): DeliveryReceipt {
-    const plaintext = new TextEncoder().encode(text);
-    const ciphertext = this.me.send(this.gid, plaintext);
-    const received = this.peer.receive(this.peerGid, ciphertext);
-    const delivered =
-      received != null && new TextDecoder().decode(received) === text;
-    return { ciphertext, delivered };
-  }
-
-  /** A human-verifiable channel fingerprint derived from the MLS exporter secret. */
-  fingerprint(): string {
-    const bytes = this.me.exporterSecret(this.gid, "murmur/fingerprint", 8);
-    return Array.from(bytes)
-      .map((b) => b.toString(16).padStart(2, "0"))
-      .join("")
-      .toUpperCase()
-      .replace(/(.{4})(?=.)/g, "$1 ");
-  }
-
-  memberCount(): number {
-    return this.me.memberCount(this.gid);
-  }
-}
-
-export function toHex(bytes: Uint8Array, max = 48): string {
-  const slice = Array.from(bytes.slice(0, max))
+function hex(bytes: Uint8Array): string {
+  return Array.from(bytes)
     .map((b) => b.toString(16).padStart(2, "0"))
-    .join(" ");
-  return bytes.length > max ? `${slice} …` : slice;
+    .join("");
+}
+
+export const RELAY_URL = `ws://${location.hostname}:8787/ws`;
+
+export class MurmurClient {
+  readonly user: string;
+  private account: WasmAccount;
+  private relay: RelayClient;
+  private groupBytes = new Map<string, Uint8Array>();
+
+  /** A message arrived from a peer on a group. */
+  onMessage?: (group: string, text: string) => void;
+  /** A channel became usable (we joined via a Welcome). */
+  onChannelReady?: (group: string, peer: string) => void;
+
+  constructor(user: string, relayUrl: string = RELAY_URL) {
+    this.user = user;
+    this.account = new WasmAccount(user);
+    this.relay = new RelayClient(relayUrl);
+    this.relay.onMessage = (g, body) => this.onCipher(g, body);
+    this.relay.onWelcome = (from, body) => this.onWelcomeReceived(from, body);
+  }
+
+  async connect(): Promise<void> {
+    await this.relay.connect();
+    this.relay.register(this.user);
+    this.relay.publishKp(this.user, this.account.keyPackage());
+  }
+
+  /** Begin a channel with `peer` (who must be online and have published a key package). */
+  async startChat(peer: string): Promise<string> {
+    const kp = await this.relay.fetchKp(peer);
+    if (!kp) throw new Error(`"${peer}" is not online (no published key package)`);
+    const gid = this.account.createGroup();
+    const welcome = this.account.addMember(gid, kp);
+    const ghex = hex(gid);
+    this.groupBytes.set(ghex, gid);
+    this.relay.sub(ghex);
+    this.relay.welcome(peer, welcome);
+    return ghex;
+  }
+
+  send(group: string, text: string) {
+    const gid = this.groupBytes.get(group);
+    if (!gid) return;
+    const ct = this.account.send(gid, new TextEncoder().encode(text));
+    this.relay.sendCipher(group, ct);
+  }
+
+  fingerprint(group: string): string {
+    const gid = this.groupBytes.get(group);
+    if (!gid) return "";
+    const bytes = this.account.exporterSecret(gid, "murmur/fingerprint", 8);
+    return hex(bytes).toUpperCase().replace(/(.{4})(?=.)/g, "$1 ");
+  }
+
+  private onWelcomeReceived(from: string, body: Uint8Array) {
+    const gid = this.account.joinGroup(body);
+    const ghex = hex(gid);
+    this.groupBytes.set(ghex, gid);
+    this.relay.sub(ghex);
+    this.onChannelReady?.(ghex, from);
+  }
+
+  private onCipher(group: string, body: Uint8Array) {
+    const gid = this.groupBytes.get(group);
+    if (!gid) return;
+    const pt = this.account.receive(gid, body);
+    if (pt) this.onMessage?.(group, new TextDecoder().decode(pt));
+  }
 }

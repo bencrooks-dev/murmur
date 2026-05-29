@@ -63,10 +63,16 @@ PQ ciphersuite); P1 builds the real API against upstream OpenMLS.
 - [ ] Benchmark on **mobile** too (PQ keys are big; phones are the constraint).
 - **Exit:** PQ-protected group works end-to-end on web AND phone; perf documented.
 
-## Phase 3 — Server MVP (`murmur-server`) + metadata resistance (differentiator #2)
-- [ ] axum WSS relay; Redis fanout; Postgres for accounts/groups/membership/refs.
+## Phase 3 — Server MVP (`murmur-server`) + metadata resistance (differentiator #2) ← STARTED
+- [x] axum **WebSocket relay**, in-memory group→subscriber fanout. Integration test
+      proves opaque payload routing between two WS clients, no sender echo. (`cargo run`
+      → ws://0.0.0.0:8787/ws.) Docker/Postgres/Redis deferred.
+- [x] **Sealed sender** (basic) — relay routes on group id only, never inspects body.
+- [ ] Key-package **directory** + per-user **Welcome inbox** (needed for real 2-client
+      handshake over the wire — the next increment that connects murmur-web to the relay).
 - [ ] Auth, registration, device-key registration.
-- [ ] **Sealed sender** — relay routes on group ID only, sender is inside MLS.
+- [ ] Length padding to power-of-two buckets.
+- [ ] Redis fanout; Postgres for accounts/groups/membership/refs (durable history).
 - [ ] **Length padding** to power-of-two buckets.
 - [ ] Invariant check: ciphertext + minimal routing metadata ONLY in storage.
 - **Exit:** two clients (one of them a phone) exchange PQ-E2EE messages through
