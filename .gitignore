@@ -11,6 +11,10 @@ node_modules/
 # uniffi generated bindings (regenerated from the lib)
 **/bindings/
 
+# web build output
+**/dist/
+*.tsbuildinfo
+
 # OS / editor
 .DS_Store
 Thumbs.db

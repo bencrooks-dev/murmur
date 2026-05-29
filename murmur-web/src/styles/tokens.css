@@ -1,0 +1,56 @@
+/* Murmur design tokens — the single source of truth (see docs/DESIGN-LANGUAGE.md).
+   Cool near-black surfaces, one restrained cold-teal accent, no gradient clichés. */
+:root {
+  /* Surfaces (low → high elevation) */
+  --bg-base: #0b0c0e;
+  --bg-surface: #131519;
+  --bg-elevated: #1a1d22;
+  --bg-overlay: #20242b;
+
+  /* Hairlines */
+  --border-subtle: #23272e;
+  --border-strong: #313742;
+
+  /* Text */
+  --text-primary: #e8eaed;
+  --text-secondary: #a1a8b3;
+  --text-tertiary: #6b7280;
+  --text-disabled: #464c56;
+
+  /* Accent — one confident, non-cliché hue: cold signal-teal */
+  --accent: #3dd4b8;
+  --accent-hover: #5be3cc;
+  --accent-press: #2bb89e;
+  --accent-quiet: rgba(61, 212, 184, 0.12);
+  --on-accent: #06201b;
+
+  /* Semantic */
+  --success: #46c77e;
+  --warning: #e0a33e;
+  --danger: #e5604d;
+  --info: #5aa9e6;
+
+  /* Radius (deliberate, not uniform) */
+  --r-control: 6px;
+  --r-card: 10px;
+  --r-tag: 4px;
+
+  /* Space (4px base) */
+  --s-1: 4px;
+  --s-2: 8px;
+  --s-3: 12px;
+  --s-4: 16px;
+  --s-6: 24px;
+  --s-8: 32px;
+
+  /* Type */
+  --font-ui: "Inter", "Söhne", -apple-system, BlinkMacSystemFont, "Segoe UI",
+    system-ui, sans-serif;
+  --font-mono: "Berkeley Mono", "JetBrains Mono", "SFMono-Regular", ui-monospace,
+    "Cascadia Code", Menlo, monospace;
+
+  /* Motion */
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --t-fast: 120ms;
+  --t-med: 180ms;
+}

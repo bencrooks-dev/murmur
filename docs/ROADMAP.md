@@ -44,9 +44,13 @@ PQ ciphersuite); P1 builds the real API against upstream OpenMLS.
       (create / add_member / join / send / receive / exporter_secret / member_count).
       `src/lib.rs`; flattened `MurmurError`; integration test `tests/group_api.rs`
       drives the full lifecycle incl. matching exporter media keys. ✅ 4/4 tests pass.
-- [ ] Member removal + handling proposal/commit fan-out beyond the happy path.
-- [ ] **WASM bindings** (web) — smoke test in a browser.
-- [ ] **uniffi bindings** (Swift + Kotlin) — wire the real API (seam proven in Spike C).
+- [x] `Account` stateful surface (owns provider/identity/groups) + **member removal**.
+      Tests `tests/account_api.rs`. ✅
+- [x] **WASM bindings** (`murmur-wasm`, wasm-bindgen) — built to wasm32 and
+      **verified running under Node** (`test_node.js`): E2EE round-trip, matching
+      exporter media keys, removal. ✅ (Needed `openmls`/`getrandom` `js` features.)
+- [ ] Handle proposal/commit fan-out beyond the happy path (multi-device ordering).
+- [ ] **uniffi bindings** of the real `Account` API (seam proven in Spike C; wrap like WASM).
 - [ ] RFC 9420 test-vector conformance suite.
 - [ ] Persistent storage provider (replace in-memory).
 - **Exit:** the same core drives a browser tab AND a RN dev build exchanging
