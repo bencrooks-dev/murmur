@@ -1,0 +1,17 @@
+[package]
+name = "murmur-server"
+version = "0.0.0"
+edition = "2021"
+description = "Murmur relay — delivers opaque MLS ciphertext between clients (sealed sender)"
+license = "AGPL-3.0"
+
+[dependencies]
+axum = { version = "0.7", features = ["ws"] }
+tokio = { version = "1", features = ["full"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+futures = "0.3"
+
+[dev-dependencies]
+tokio-tungstenite = "0.23"
+futures-util = "0.3"

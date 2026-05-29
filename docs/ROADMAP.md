@@ -72,10 +72,14 @@ PQ ciphersuite); P1 builds the real API against upstream OpenMLS.
 - **Exit:** two clients (one of them a phone) exchange PQ-E2EE messages through
   the server, relay cannot see who sent what.
 
-## Phase 4 — Clients in parallel: web + mobile (mobile day one)
+## Phase 4 — Clients in parallel: web + mobile (mobile day one) ← STARTED
 **Goal:** ship `murmur-web` AND `murmur-mobile` together.
-- [ ] `murmur-web`: React + Vite over WASM core; channels, membership, timeline,
-      device linking, key-transparency self-check.
+- [~] `murmur-web` SCAFFOLDED: React + Vite + TS over the real WASM core, on the
+      locked dark design system (tokens, app shell, secure DM, live in-browser MLS
+      encryption, ciphertext inspector, exporter-derived channel fingerprint).
+      Type-checks + production-builds clean (`npm run build`). Run: `npm run dev`.
+      TODO: server-backed channels, membership UI, device linking, key-transparency,
+      real multi-user (not the local 2-account demo).
 - [ ] `murmur-mobile`: React Native over uniffi core; same feature set; encrypted
       push payloads; background key handling.
 - [ ] Shared UI logic / design system across both where practical.
