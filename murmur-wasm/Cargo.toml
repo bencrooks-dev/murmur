@@ -1,0 +1,18 @@
+[package]
+name = "murmur-wasm"
+version = "0.0.0"
+edition = "2021"
+description = "WASM bindings for the Murmur crypto core (web client)"
+license = "AGPL-3.0"
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+murmur-crypto = { path = "../murmur-crypto" }
+wasm-bindgen = "=0.2.92"
+# Force the JS backend for getrandom on wasm (used transitively by the RNG).
+getrandom = { version = "0.2", features = ["js"] }
+# Enable OpenMLS' `js` feature for wasm (secure randomness + wasm timer).
+# Feature unification turns this on for the openmls that murmur-crypto uses.
+openmls = { version = "0.6", features = ["js"] }

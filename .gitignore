@@ -1,0 +1,18 @@
+# Rust
+/target/
+**/target/
+Cargo.lock
+
+# wasm / node artifacts
+**/pkg/
+**/pkg-node/
+node_modules/
+
+# uniffi generated bindings (regenerated from the lib)
+**/bindings/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

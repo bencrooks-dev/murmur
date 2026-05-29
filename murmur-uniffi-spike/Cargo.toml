@@ -1,0 +1,13 @@
+[package]
+name = "murmur-uniffi-spike"
+version = "0.0.0"
+edition = "2021"
+description = "Spike C — prove the uniffi (mobile) binding seam"
+license = "AGPL-3.0"
+
+[lib]
+crate-type = ["cdylib", "lib"]
+name = "murmur_uniffi_spike"
+
+[dependencies]
+uniffi = { version = "0.28", features = ["cli"] }
